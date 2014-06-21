@@ -46,7 +46,8 @@ Bird.prototype.constructor = Bird;
 
 Bird.prototype.flap = function() {
 	if(!this.killed){
-		this.flapSound.play();
+		this.flapSound && this.flapSound.play();
+		
 		this.body.velocity.y = -400;
 		this.game.add.tween(this).to({
 			angle: -40
@@ -526,13 +527,13 @@ Preload.prototype = {
 
     this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
 
-    this.load.audio('score', '/assets/score.wav');
-    this.load.audio('flap', '/assets/flap.wav');
-    this.load.audio('pipeHit', '/assets/pipe-hit.wav');
-    this.load.audio('groundHit', '/assets/ground-hit.wav');
+    this.load.audio('score', 'assets/score.wav');
+    this.load.audio('flap', 'assets/flap.wav');
+    this.load.audio('pipeHit', 'assets/pipe-hit.wav');
+    this.load.audio('groundHit', 'assets/ground-hit.wav');
 
-    this.game.scoreSound = new Media('assets/score.wav');
-    this.game.flapSound = new Media('assets/flap.wav');
+    // this.game.scoreSound = new Media('assets/score.wav');
+    this.game.flapSound = new Media('/assets/flap.wav');
 
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
