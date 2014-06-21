@@ -8,22 +8,16 @@ window.onload = function () {
 window.onDeviceReady = function () {
 	console.log('device ready');
 
+	var w = window.innerWidth * window.devicePixelRatio,
+	    h = window.innerHeight * window.devicePixelRatio;
+
 	if(window.plugins) {
 		window.PGLowLatencyAudio = window.plugins.LowLatencyAudio;
 	} else {
 		window.PGLowLatencyAudio = null;
 	}
 
-	var w = window.innerWidth * window.devicePixelRatio,
-	    h = window.innerHeight * window.devicePixelRatio;
-
-	var devY = 555;
-
-
-
-
-	var game = new Phaser.Game((devY / h) * w, devY, Phaser.AUTO, 'flappy-hell');
-
+	var game = new Phaser.Game(w, h, Phaser.AUTO, 'flappy-hell');
 
 	// Game States
 	game.state.add('boot', require('./states/boot'));
@@ -380,7 +374,7 @@ Play.prototype = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 1200;
 
-        this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'background');
+        this.background = this.game.add.tileSprite(0, 0, 288, 555, 'background');
         this.background.autoScroll(-30, 0);
 
         //   Emitters have a center point and a width/height, which extends from their center point to the left/right and up/down
@@ -421,9 +415,8 @@ Play.prototype = {
         this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
 
         this.pipes = this.game.add.group();
-        this.ground = new Ground(this.game, 0, this.game.height - 112, this.game.width, 112);
+        this.ground = new Ground(this.game, 0, 400, 335, 112);
         this.game.add.existing(this.ground);
-        console.log(this.ground)
 
         this.instructionGroup = this.game.add.group();
         this.instructionGroup.add(this.game.add.sprite(this.game.width / 2, 100, 'getReady'));
@@ -517,8 +510,9 @@ function Preload() {
 
 Preload.prototype = {
   preload: function() {
-    // game.height = gameHeight;    // Assign the available window Height
-    // game.width = gameWidth;        // Assign the available window Width
+
+    this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.game.scale.setScreenSize(true);
     this.game.scale.refresh();        // Scale the game to fit the screen
 
     this.asset = this.add.sprite(this.game.width / 2, this.game.height / 2, 'preloader');
