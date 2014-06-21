@@ -415,14 +415,7 @@ Play.prototype = {
         this.instructionGroup.setAll('anchor.y', 0.5);
 
         this.pipeGenerator = null;
-
         this.gameover = false;
-
-        this.pipeHitSound = this.game.add.audio('pipeHit');
-        this.groundHitSound = this.game.add.audio('groundHit');
-        this.scoreSound = this.game.add.audio('score');
-        this.scoreSound.volume = 0.3;
-
     },
     update: function() {
         // enable collisions between the bird and the ground
@@ -526,13 +519,6 @@ Preload.prototype = {
     this.load.image('particle', 'assets/particle.png');
 
     this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
-
-    // this.load.audio('score', 'assets/score.wav');
-    // this.load.audio('flap', 'assets/flap.wav');
-    // this.load.audio('pipeHit', 'assets/pipe-hit.wav');
-    // this.load.audio('groundHit', 'assets/ground-hit.wav');
-
-    // this.game.scoreSound = new Media('assets/score.wav');
 
     Media.prototype.playAudio = function() {
       if (this.this.nowPlaying) {
