@@ -44,6 +44,7 @@
 
     <!-- Core plugins -->
     <gap:plugin name="org.apache.cordova.media" />
+    <gap:plugin name="com.rjfun.cordova.plugin.lowlatencyaudio" version="1.0" />
     <!-- <gap:plugin name="org.apache.cordova.battery-status" /> -->
     <!-- <gap:plugin name="org.apache.cordova.device" version="0.2.8" /> -->
 <!--<gap:plugin name="org.apache.cordova.camera" />
