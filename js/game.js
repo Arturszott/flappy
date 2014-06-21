@@ -506,8 +506,7 @@ function Preload() {
 
 Preload.prototype = {
   preload: function() {
-    console.log(this.width / 2, this.height / 2);
-    this.asset = this.add.sprite(this.width / 2, this.height / 2, 'preloader');
+    this.asset = this.add.sprite(this.game.width / 2, this.game.height / 2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.load.setPreloadSprite(this.asset);
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
@@ -532,10 +531,8 @@ Preload.prototype = {
     this.load.audio('pipeHit', 'assets/pipe-hit.wav');
     this.load.audio('groundHit', 'assets/ground-hit.wav');
 
-    this.game.scoreSound = new Media('assets/score.wav');
-    this.game.flapSound = new Media('assets/flap.wav');
-    
-    console.log();
+    // this.game.scoreSound = new Media('assets/score.wav');
+    // this.game.flapSound = new Media('assets/flap.wav');
 
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
