@@ -23,7 +23,7 @@ var Bird = function(game, x, y, frame) {
 	this.animations.add('flap');
 	this.animations.play('flap', 12, true);
 
-	this.flapSound = this.game.add.audio('flap');
+	this.flapSound = this.game.flapSound;
 
 	this.name = 'bird';
 	this.alive = false;
@@ -527,6 +527,11 @@ Preload.prototype = {
     this.load.audio('flap', 'assets/flap.wav');
     this.load.audio('pipeHit', 'assets/pipe-hit.wav');
     this.load.audio('groundHit', 'assets/ground-hit.wav');
+
+    this.game.scoreSound = new Media('assets/score.wav');
+    this.game.flapSound = new Media('assets/flap.wav');
+    
+    console.log();
 
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
