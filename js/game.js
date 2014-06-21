@@ -521,7 +521,7 @@ Preload.prototype = {
     this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
 
     Media.prototype.playAudio = function() {
-      if (this.this.nowPlaying) {
+      if (this.nowPlaying) {
         this.stop();
         this.release();
         this.nowPlaying = false;
