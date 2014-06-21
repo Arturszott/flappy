@@ -7,10 +7,22 @@ window.onload = function () {
 };
 window.onDeviceReady = function () {
 	console.log('device ready');
-	console.log(window.plugins)
-	window.PGLowLatencyAudio = window.plugins.LowLatencyAudio;
-	var game = new Phaser.Game(288, 505, Phaser.AUTO, 'flappy-hell');
 
+	if(window.plugins) {
+		window.PGLowLatencyAudio = window.plugins.LowLatencyAudio;
+	} else {
+		window.PGLowLatencyAudio = null;
+	}
+
+	var w = window.innerWidth * window.devicePixelRatio,
+	    h = window.innerHeight * window.devicePixelRatio;
+
+	var devY = 555;
+
+
+
+
+	var game = new Phaser.Game((devY / h) * w, devY, Phaser.AUTO, 'flappy-hell');
 
 
 	// Game States
@@ -50,7 +62,7 @@ Bird.prototype.constructor = Bird;
 
 Bird.prototype.flap = function() {
 	if(!this.killed){
-		PGLowLatencyAudio.play('flap');
+		PGLowLatencyAudio && PGLowLatencyAudio.play('flap');
 		
 		this.body.velocity.y = -400;
 		this.game.add.tween(this).to({
@@ -368,7 +380,7 @@ Play.prototype = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 1200;
 
-        this.background = this.game.add.tileSprite(0, 0, 288, 555, 'background');
+        this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'background');
         this.background.autoScroll(-30, 0);
 
         //   Emitters have a center point and a width/height, which extends from their center point to the left/right and up/down
@@ -409,8 +421,9 @@ Play.prototype = {
         this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
 
         this.pipes = this.game.add.group();
-        this.ground = new Ground(this.game, 0, 400, 335, 112);
+        this.ground = new Ground(this.game, 0, this.game.height - 112, this.game.width, 112);
         this.game.add.existing(this.ground);
+        console.log(this.ground)
 
         this.instructionGroup = this.game.add.group();
         this.instructionGroup.add(this.game.add.sprite(this.game.width / 2, 100, 'getReady'));
@@ -458,19 +471,19 @@ Play.prototype = {
             pipeGroup.hasScored = true;
             this.score++;
             this.scoreText.setText(this.score.toString());
-            this.scoreSound &&  this.scoreSound.playAudio();
+            PGLowLatencyAudio && PGLowLatencyAudio.play('score');
         }
     },
     deathHandler: function(bird, enemy) {
 
         if (enemy instanceof Ground && !this.bird.onGround) {
-            this.groundhitSound &&  this.groundhitSound.playAudio();
+            PGLowLatencyAudio && PGLowLatencyAudio.play('ground-hit');
             this.scoreboard = new Scoreboard(this.game);
             this.game.add.existing(this.scoreboard);
             this.scoreboard.show(this.score);
             this.bird.onGround = true;
         } else if (enemy instanceof Pipe) {
-            this.pipehitSound &&  this.pipehitSound.playAudio();
+            PGLowLatencyAudio && PGLowLatencyAudio.play('pipe-hit');
             enemy.demolish();
         }
 
@@ -504,6 +517,10 @@ function Preload() {
 
 Preload.prototype = {
   preload: function() {
+    // game.height = gameHeight;    // Assign the available window Height
+    // game.width = gameWidth;        // Assign the available window Width
+    this.game.scale.refresh();        // Scale the game to fit the screen
+
     this.asset = this.add.sprite(this.game.width / 2, this.game.height / 2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.load.setPreloadSprite(this.asset);
@@ -523,12 +540,14 @@ Preload.prototype = {
     this.load.image('particle', 'assets/particle.png');
 
     this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
+    console.log(PGLowLatencyAudio);
+    if (!!PGLowLatencyAudio) {
+      PGLowLatencyAudio.preloadFX('flap', 'assets/flap.wav');
+      PGLowLatencyAudio.preloadFX('score', 'assets/score.wav');
+      PGLowLatencyAudio.preloadFX('pipe-hit', 'assets/pipe-hit.wav');
+      PGLowLatencyAudio.preloadFX('ground-hit', 'assets/ground-hit.wav');
+    }
 
-    PGLowLatencyAudio.preloadFX('flap', 'assets/flap.wav');
-    // this.game.flapSound = new Media('/android_asset/www/assets/flap.wav');
-    // this.game.scoreSound = new Media('/android_asset/www/assets/score.wav');
-    // this.game.pipehitSound = new Media('/android_asset/www/assets/pipe-hit.wav');
-    // this.game.groundhitSound = new Media('/android_asset/www/assets/ground-hit.wav');
 
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
