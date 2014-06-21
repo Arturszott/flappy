@@ -46,7 +46,7 @@ Bird.prototype.constructor = Bird;
 
 Bird.prototype.flap = function() {
 	if(!this.killed){
-		this.flapSound && this.flapSound.playAudio();
+		PGLowLatencyAudio.play('flap');
 		
 		this.body.velocity.y = -400;
 		this.game.add.tween(this).to({
@@ -530,11 +530,11 @@ Preload.prototype = {
         this.nowPlaying = true;
       }
     }
-
-    this.game.flapSound = new Media('/android_asset/www/assets/flap.wav');
-    this.game.scoreSound = new Media('/android_asset/www/assets/score.wav');
-    this.game.pipehitSound = new Media('/android_asset/www/assets/pipe-hit.wav');
-    this.game.groundhitSound = new Media('/android_asset/www/assets/ground-hit.wav');
+    PGLowLatencyAudio.preloadFX('explosion', 'assets/flap.wav');
+    // this.game.flapSound = new Media('/android_asset/www/assets/flap.wav');
+    // this.game.scoreSound = new Media('/android_asset/www/assets/score.wav');
+    // this.game.pipehitSound = new Media('/android_asset/www/assets/pipe-hit.wav');
+    // this.game.groundhitSound = new Media('/android_asset/www/assets/ground-hit.wav');
 
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
