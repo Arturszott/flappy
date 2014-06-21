@@ -46,7 +46,7 @@ Bird.prototype.constructor = Bird;
 
 Bird.prototype.flap = function() {
 	if(!this.killed){
-		this.flapSound && this.flapSound.stop() &&  this.flapSound.play();
+		this.flapSound && this.flapSound.playAudio();
 		
 		this.body.velocity.y = -400;
 		this.game.add.tween(this).to({
@@ -461,19 +461,19 @@ Play.prototype = {
             pipeGroup.hasScored = true;
             this.score++;
             this.scoreText.setText(this.score.toString());
-            this.scoreSound && this.scoreSound.stop() &&  this.scoreSound.play();
+            this.scoreSound &&  this.scoreSound.playAudio();
         }
     },
     deathHandler: function(bird, enemy) {
 
         if (enemy instanceof Ground && !this.bird.onGround) {
-            this.groundhitSound && this.groundhitSound.stop() &&  this.groundhitSound.play();
+            this.groundhitSound &&  this.groundhitSound.playAudio();
             this.scoreboard = new Scoreboard(this.game);
             this.game.add.existing(this.scoreboard);
             this.scoreboard.show(this.score);
             this.bird.onGround = true;
         } else if (enemy instanceof Pipe) {
-            this.pipehitSound && this.pipehitSound.stop() &&  this.pipehitSound.play();
+            this.pipehitSound &&  this.pipehitSound.playAudio();
             enemy.demolish();
         }
 
@@ -533,6 +533,18 @@ Preload.prototype = {
     this.load.audio('groundHit', 'assets/ground-hit.wav');
 
     // this.game.scoreSound = new Media('assets/score.wav');
+
+    Media.prototype.playAudio = function(){
+      if(this.isPlayed){
+        this.stop();
+        this.isPlayed = false;
+      } else {
+        this.play();
+        this.isPlayed = true;
+      }
+      
+    }
+
     this.game.flapSound = new Media('/android_asset/www/assets/flap.wav');
     this.game.scoreSound = new Media('/android_asset/www/assets/score.wav');
     this.game.pipehitSound = new Media('/android_asset/www/assets/pipe-hit.wav');
