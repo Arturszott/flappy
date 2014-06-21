@@ -6,7 +6,7 @@ window.onload = function () {
 	document.addEventListener("deviceready",onDeviceReady,false);
 };
 window.onDeviceReady = function () {
-	console.log(Media);
+	console.log('device ready');
 	var game = new Phaser.Game(288, 505, Phaser.AUTO, 'flappy-hell');
 
 	// Game States
