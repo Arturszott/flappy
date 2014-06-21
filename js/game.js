@@ -526,10 +526,10 @@ Preload.prototype = {
 
     this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
 
-    this.load.audio('score', 'assets/score.wav');
-    this.load.audio('flap', 'assets/flap.wav');
-    this.load.audio('pipeHit', 'assets/pipe-hit.wav');
-    this.load.audio('groundHit', 'assets/ground-hit.wav');
+    this.load.audio('score', '/assets/score.wav');
+    this.load.audio('flap', '/assets/flap.wav');
+    this.load.audio('pipeHit', '/assets/pipe-hit.wav');
+    this.load.audio('groundHit', '/assets/ground-hit.wav');
 
     // this.game.scoreSound = new Media('assets/score.wav');
     // this.game.flapSound = new Media('assets/flap.wav');
