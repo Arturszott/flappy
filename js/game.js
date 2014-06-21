@@ -530,7 +530,7 @@ Preload.prototype = {
         this.nowPlaying = true;
       }
     }
-    PGLowLatencyAudio.preloadFX('explosion', 'assets/flap.wav');
+    PGLowLatencyAudio.preloadFX('flap', 'assets/flap.wav');
     // this.game.flapSound = new Media('/android_asset/www/assets/flap.wav');
     // this.game.scoreSound = new Media('/android_asset/www/assets/score.wav');
     // this.game.pipehitSound = new Media('/android_asset/www/assets/pipe-hit.wav');
