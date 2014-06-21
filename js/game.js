@@ -46,7 +46,7 @@ Bird.prototype.constructor = Bird;
 
 Bird.prototype.flap = function() {
 	if(!this.killed){
-		this.flapSound && this.flapSound.play();
+		this.flapSound && this.flapSound.stop() &&  this.flapSound.play();
 		
 		this.body.velocity.y = -400;
 		this.game.add.tween(this).to({
@@ -461,19 +461,19 @@ Play.prototype = {
             pipeGroup.hasScored = true;
             this.score++;
             this.scoreText.setText(this.score.toString());
-            this.scoreSound.play();
+            this.scoreSound && this.scoreSound.stop() &&  this.scoreSound.play();
         }
     },
     deathHandler: function(bird, enemy) {
 
         if (enemy instanceof Ground && !this.bird.onGround) {
-            this.groundHitSound.play();
+            this.groundhitSound && this.groundhitSound.stop() &&  this.groundhitSound.play();
             this.scoreboard = new Scoreboard(this.game);
             this.game.add.existing(this.scoreboard);
             this.scoreboard.show(this.score);
             this.bird.onGround = true;
         } else if (enemy instanceof Pipe) {
-            this.pipeHitSound.play();
+            this.pipehitSound && this.pipehitSound.stop() &&  this.pipehitSound.play();
             enemy.demolish();
         }
 
@@ -534,6 +534,9 @@ Preload.prototype = {
 
     // this.game.scoreSound = new Media('assets/score.wav');
     this.game.flapSound = new Media('/android_asset/www/assets/flap.wav');
+    this.game.scoreSound = new Media('/android_asset/www/assets/score.wav');
+    this.game.pipehitSound = new Media('/android_asset/www/assets/pipe-hit.wav');
+    this.game.groundhitSound = new Media('/android_asset/www/assets/ground-hit.wav');
 
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
