@@ -534,12 +534,14 @@ Preload.prototype = {
 
     // this.game.scoreSound = new Media('assets/score.wav');
 
-    Media.prototype.playAudio = function(){
-      if(this.isPlaying()){
+    Media.prototype.playAudio = function() {
+      if (this.this.nowPlaying) {
         this.stop();
+        this.release();
+        this.nowPlaying = false;
       } else {
         this.play();
-        this.release();
+        this.nowPlaying = true;
       }
     }
 
