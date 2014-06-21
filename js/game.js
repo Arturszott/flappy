@@ -7,8 +7,8 @@ window.onload = function () {
 };
 window.onDeviceReady = function () {
 	console.log('device ready');
-
-	console.log(PGLowLatencyAudio);
+	console.log(window.plugins)
+	window.PGLowLatencyAudio = window.plugins.LowLatencyAudio;
 	var game = new Phaser.Game(288, 505, Phaser.AUTO, 'flappy-hell');
 
 
