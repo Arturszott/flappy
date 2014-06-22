@@ -2,29 +2,28 @@
 'use strict';
 
 //global variables
-window.onload = function () {
-	document.addEventListener("deviceready",onDeviceReady,false);
+window.onload = function() {
+	document.addEventListener("deviceready", onDeviceReady, false);
 };
-window.onDeviceReady = function () {
+window.onDeviceReady = function() {
 	console.log('device ready');
 
 	var w = window.innerWidth * window.devicePixelRatio,
-	    h = window.innerHeight * window.devicePixelRatio;
+		h = window.innerHeight * window.devicePixelRatio;
 
-	if(window.plugins) {
+	if (window.plugins) {
 		window.PGLowLatencyAudio = window.plugins.LowLatencyAudio;
 	} else {
 		window.PGLowLatencyAudio = null;
 	}
+	var gameRatio = 288 / 505;
 
-	var game = new Phaser.Game(w, h, Phaser.AUTO, 'flappy-hell');
+	var game = new Phaser.Game(h * gameRatio, h, Phaser.AUTO, 'flappy-hell');
+
+
 
 	// Game States
-	game.state.add('boot', require('./states/boot'));
-	game.state.add('menu', require('./states/menu'));
-	game.state.add('play', require('./states/play'));
-	game.state.add('preload', require('./states/preload'));
-	
+	 game.state.add('boot', require('./states/boot'));  game.state.add('menu', require('./states/menu'));  game.state.add('play', require('./states/play'));  game.state.add('preload', require('./states/preload')); 
 
 	game.state.start('boot');
 }
@@ -206,11 +205,13 @@ var Scoreboard = function(game) {
 
 	this.scoreboard = this.create(this.game.width / 2, 200, 'scoreboard');
 	this.scoreboard.anchor.setTo(0.5, 0.5);
+	console.log(this.scoreboard.x);
 
-	this.scoreText = this.game.add.bitmapText(this.scoreboard.width - 10, 180, 'flappyfont', '', 18);
+	var scoreX = this.scoreboard.x + this.scoreboard.width/2 - 50;
+	this.scoreText = this.game.add.bitmapText(scoreX, 180, 'flappyfont', '', 18);
 	this.add(this.scoreText);
 
-	this.bestScoreText = this.game.add.bitmapText(this.scoreboard.width - 10, 230, 'flappyfont', '', 18);
+	this.bestScoreText = this.game.add.bitmapText(scoreX, 230, 'flappyfont', '', 18);
 	this.add(this.bestScoreText);
 
 	// add our start button with a callback
@@ -318,12 +319,12 @@ function Menu() {}
 Menu.prototype = {
   preload: function() {
     // add the background sprite
-    this.background = this.game.add.sprite(0, 0, 'background');
+    this.background = this.game.add.tileSprite(0, 0, this.game.width, 555, 'background');
   },
   create: function() {
     // add the ground sprite as a tile
     // and start scrolling in the negative x direction
-    this.ground = this.game.add.tileSprite(0, 400, 335, 112, 'ground');
+    this.ground = this.game.add.tileSprite(0, this.game.height - 112, this.game.width, 112, 'ground');
     this.ground.autoScroll(-100, 0);
 
     this.titleGroup = this.game.add.group();
@@ -374,7 +375,7 @@ Play.prototype = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 1200;
 
-        this.background = this.game.add.tileSprite(0, 0, 288, 555, 'background');
+        this.background = this.game.add.tileSprite(0, 0, this.game.width, 555, 'background');
         this.background.autoScroll(-30, 0);
 
         //   Emitters have a center point and a width/height, which extends from their center point to the left/right and up/down
@@ -415,7 +416,7 @@ Play.prototype = {
         this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
 
         this.pipes = this.game.add.group();
-        this.ground = new Ground(this.game, 0, 400, 335, 112);
+        this.ground = new Ground(this.game, 0, this.game.height - 112, this.game.width, 112);
         this.game.add.existing(this.ground);
 
         this.instructionGroup = this.game.add.group();
@@ -511,9 +512,10 @@ function Preload() {
 Preload.prototype = {
   preload: function() {
 
-    this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    this.game.scale.setScreenSize(true);
-    this.game.scale.refresh();        // Scale the game to fit the screen
+    // this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    // this.game.scale.setScreenSize(true);
+    // this.game.scale.refresh();        // Scale the game to fit the screen
+    // this.game.stage.scale.startFullScreen();
 
     this.asset = this.add.sprite(this.game.width / 2, this.game.height / 2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
@@ -534,7 +536,7 @@ Preload.prototype = {
     this.load.image('particle', 'assets/particle.png');
 
     this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
-    console.log(PGLowLatencyAudio);
+
     if (!!PGLowLatencyAudio) {
       PGLowLatencyAudio.preloadFX('flap', 'assets/flap.wav');
       PGLowLatencyAudio.preloadFX('score', 'assets/score.wav');
@@ -542,11 +544,11 @@ Preload.prototype = {
       PGLowLatencyAudio.preloadFX('ground-hit', 'assets/ground-hit.wav');
     }
 
-
     this.load.spritesheet('pipe', 'assets/bonepipes.png', 54, 320, 2);
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
   },
   create: function() {
+    this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
     this.asset.cropEnabled = false;
   },
   update: function() {
