@@ -18,9 +18,7 @@ window.onDeviceReady = function() {
 	}
 	var gameRatio = 288 / 505;
 
-	var game = new Phaser.Game(h * gameRatio, h, Phaser.AUTO, 'flappy-hell');
-
-
+	var game = new Phaser.Game(w, h, Phaser.AUTO, 'flappy-hell');
 
 	// Game States
 	 game.state.add('boot', require('./states/boot'));  game.state.add('menu', require('./states/menu'));  game.state.add('play', require('./states/play'));  game.state.add('preload', require('./states/preload')); 
@@ -208,11 +206,12 @@ var Scoreboard = function(game) {
 	console.log(this.scoreboard.x);
 
 	var scoreX = this.scoreboard.x + this.scoreboard.width/2 - 50;
-	this.scoreText = this.game.add.bitmapText(scoreX, 180, 'flappyfont', '', 18);
-	this.add(this.scoreText);
 
+	this.scoreText = this.game.add.bitmapText(scoreX, 180, 'flappyfont', '', 18);
 	this.bestScoreText = this.game.add.bitmapText(scoreX, 230, 'flappyfont', '', 18);
-	this.add(this.bestScoreText);
+
+	// this.scoreText.align = 'right';
+	// this.bestScoreText.align = 'right';
 
 	// add our start button with a callback
 	this.startButton = this.game.add.button(this.game.width / 2, 300, 'startButton', this.startClick, this);
