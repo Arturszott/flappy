@@ -8,8 +8,8 @@ window.onload = function() {
 window.onDeviceReady = function() {
 	console.log('device ready');
 
-	var w = window.innerWidth * window.devicePixelRatio,
-		h = window.innerHeight * window.devicePixelRatio;
+	var w = window.innerWidth,
+		h = window.innerHeight;
 
 	if (window.plugins) {
 		window.PGLowLatencyAudio = window.plugins.LowLatencyAudio;
