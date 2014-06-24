@@ -17,10 +17,10 @@ window.onDeviceReady = function() {
 		window.PGLowLatencyAudio = null;
 	}
 	var gameRatio = 288 / 505;
-	var screenRatio = w/h;
+	var screenRatio = w / h;
 	console.log(screenRatio)
 
-	var game = new Phaser.Game(505*screenRatio, 505, Phaser.AUTO, 'flappy-hell');
+	var game = new Phaser.Game(505 * screenRatio, 505, Phaser.AUTO, 'flappy-hell');
 
 	// Game States
 	 game.state.add('boot', require('./states/boot'));  game.state.add('menu', require('./states/menu'));  game.state.add('play', require('./states/play'));  game.state.add('preload', require('./states/preload')); 
@@ -302,6 +302,7 @@ Boot.prototype = {
   },
   create: function() {
     this.game.input.maxPointers = 1;
+
     this.game.state.start('preload');
   }
 };
@@ -371,6 +372,24 @@ var emitter;
 
 function Play() {}
 Play.prototype = {
+    explodeBones: function(x, y) {
+        var boneEmitter = this.game.add.emitter(x, y, 20);
+
+        boneEmitter.width = 20;
+        boneEmitter.minParticleSpeed.set(-500, -500);
+        boneEmitter.maxParticleSpeed.set(500, 500);
+        boneEmitter.makeParticles('bone');
+        boneEmitter.setRotation(0, 360);
+        boneEmitter.setAlpha(1, 1);
+        boneEmitter.setScale(0.5, 0.5, 1, 1);
+        boneEmitter.gravity = -1200;
+        //   false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
+        //   The 5000 value is the lifespan of each particle before it's killed
+        boneEmitter.start(false, 3000, 10);
+        setTimeout(function() {
+            boneEmitter.destroy()
+        }, 3000);
+    },
     create: function() {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 1200;
@@ -379,26 +398,26 @@ Play.prototype = {
         this.background.autoScroll(-30, 0);
 
         //   Emitters have a center point and a width/height, which extends from their center point to the left/right and up/down
-        emitter = this.game.add.emitter(this.game.world.centerX, 0, 200);
+        emitter = this.game.add.emitter(this.game.width, 0, 300);
 
         //   This emitter will have a width of 800px, so a particle can emit from anywhere in the range emitter.x += emitter.width / 2
-        emitter.width = this.game.width;
+        emitter.width = 20
 
         emitter.makeParticles('ghost');
 
         emitter.minParticleSpeed.set(100, 300);
         emitter.maxParticleSpeed.set(100, 400);
-        emitter.setXSpeed(0, -200);
-        emitter.setYSpeed(0, 100);
+        emitter.setXSpeed(-200, -400);
+        emitter.setYSpeed(0, 0);
 
         emitter.setRotation(0, 0);
-        emitter.setAlpha(0.3, 0.8);
+        emitter.setAlpha(0.3, 1);
         emitter.setScale(0.5, 0.5, 1, 1);
         emitter.gravity = -1200;
 
         //   false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
         //   The 5000 value is the lifespan of each particle before it's killed
-        emitter.start(false, 5000, 1000);
+        emitter.start(false, 3000, 200);
 
         this.bird = new Bird(this.game, 100, this.game.height / 2);
         this.game.add.existing(this.bird);
@@ -439,6 +458,7 @@ Play.prototype = {
                 this.game.physics.arcade.collide(this.bird, pipeGroup, this.deathHandler, null, this);
             }, this);
         }
+        emitter.y = Math.floor(Math.random() * this.game.height);
     },
     shutdown: function() {
         this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
@@ -487,6 +507,13 @@ Play.prototype = {
             this.pipes.callAll('stop');
             this.pipeGenerator.timer.stop();
             this.ground.stopScroll();
+            this.game.add.tween(emitter).to({
+                alpha: 0
+            }, 500, Phaser.Easing.Back.InOut, true, 0, 1, false);
+            setTimeout(function() {
+                emitter.destroy();
+            }, 500);
+            this.explodeBones(bird.x, bird.y + 20);
         }
     },
     generatePipes: function() {
@@ -525,6 +552,7 @@ Preload.prototype = {
     this.load.image('background', 'assets/bonebg.png');
     this.load.image('ground', 'assets/boneground.png');
     this.load.image('ghost', 'assets/ghost.png');
+    this.load.image('bone', 'assets/bone.png');
     this.load.image('title', 'assets/logo.png');
     this.load.image('startButton', 'assets/start-button.png');
     this.load.image('instructions', 'assets/instructiondarks.png');
@@ -548,10 +576,11 @@ Preload.prototype = {
     this.load.spritesheet('bird', 'assets/ghostbird.png', 34, 24, 3);
   },
   create: function() {
-    this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
-    this.asset.cropEnabled = false;
-    this.game.scale.startFullScreen(true);
-    this.game.scale.refresh();
+
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.pageAlignHorizontally = true;
+        this.scale.pageAlignVertically = true;
+        this.scale.setScreenSize(true);
   },
   update: function() {
     if (!!this.ready) {
