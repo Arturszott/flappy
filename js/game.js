@@ -2,10 +2,18 @@
 'use strict';
 
 //global variables
+window.appStarted = false;
+
 window.onload = function() {
 	document.addEventListener("deviceready", onDeviceReady, false);
+	setTimeout(function() {
+		onDeviceReady()
+	}, 2000);
 };
 window.onDeviceReady = function() {
+	if(window.appStarted) return;
+	window.appStarted = true;
+
 	var w = window.innerWidth,
 		h = window.innerHeight;
 
@@ -584,8 +592,12 @@ Preload.prototype = {
 
   },
   update: function() {
+    var that = this;
     if (!!this.ready) {
-      this.game.state.start('menu');
+      this.ready = false;
+      setTimeout(function() {
+        that.game.state.start('menu');
+      }, 1000);
     }
   },
   onLoadComplete: function() {
