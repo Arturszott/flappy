@@ -24,7 +24,6 @@ window.onDeviceReady = function() {
 	game.state.start('boot');
 }
 
-onDeviceReady()
 },{"./states/boot":7,"./states/menu":8,"./states/play":9,"./states/preload":10}],2:[function(require,module,exports){
 'use strict';
 
