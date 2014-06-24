@@ -420,7 +420,7 @@ Play.prototype = {
 
         //   false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
         //   The 5000 value is the lifespan of each particle before it's killed
-        emitter.start(false, 3000, 200);
+        emitter.start(false, 2000, 700);
 
         this.bird = new Bird(this.game, 100, this.game.height / 2);
         this.game.add.existing(this.bird);
