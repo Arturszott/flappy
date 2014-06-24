@@ -6,8 +6,6 @@ window.onload = function() {
 	document.addEventListener("deviceready", onDeviceReady, false);
 };
 window.onDeviceReady = function() {
-	console.log('device ready');
-
 	var w = window.innerWidth,
 		h = window.innerHeight;
 
@@ -16,9 +14,7 @@ window.onDeviceReady = function() {
 	} else {
 		window.PGLowLatencyAudio = null;
 	}
-	var gameRatio = 288 / 505;
 	var screenRatio = w / h;
-	console.log(screenRatio)
 
 	var game = new Phaser.Game(505 * screenRatio, 505, Phaser.AUTO, 'flappy-hell');
 
@@ -298,7 +294,14 @@ function Boot() {
 
 Boot.prototype = {
   preload: function() {
+  	this.stage.backgroundColor = '#e6e6e6';
     this.load.image('preloader', 'assets/preloader.gif');
+    this.load.image('splash', 'assets/splash.png');
+
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.scale.pageAlignHorizontally = true;
+    this.scale.pageAlignVertically = true;
+    this.scale.setScreenSize(true);
   },
   create: function() {
     this.game.input.maxPointers = 1;
@@ -549,6 +552,8 @@ Preload.prototype = {
     this.load.setPreloadSprite(this.asset);
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
+    this.add.sprite((this.game.width - 288) / 2, 0, 'splash');
+
     this.load.image('background', 'assets/bonebg.png');
     this.load.image('ground', 'assets/boneground.png');
     this.load.image('ghost', 'assets/ghost.png');
@@ -577,10 +582,7 @@ Preload.prototype = {
   },
   create: function() {
 
-        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.scale.pageAlignHorizontally = true;
-        this.scale.pageAlignVertically = true;
-        this.scale.setScreenSize(true);
+
   },
   update: function() {
     if (!!this.ready) {
