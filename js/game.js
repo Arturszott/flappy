@@ -296,7 +296,7 @@ Boot.prototype = {
   	this.stage.backgroundColor = '#e6e6e6';
     this.load.image('preloader', 'assets/preloader.gif');
     this.load.image('splash', 'assets/splash.png');
-
+    this.stage.smoothed = false;
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
