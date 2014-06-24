@@ -17,14 +17,18 @@ window.onDeviceReady = function() {
 		window.PGLowLatencyAudio = null;
 	}
 	var gameRatio = 288 / 505;
+	var screenRatio = w/h;
+	console.log(screenRatio)
 
-	var game = new Phaser.Game(w, h, Phaser.AUTO, 'flappy-hell');
+	var game = new Phaser.Game(505*screenRatio, 505, Phaser.AUTO, 'flappy-hell');
 
 	// Game States
 	 game.state.add('boot', require('./states/boot'));  game.state.add('menu', require('./states/menu'));  game.state.add('play', require('./states/play'));  game.state.add('preload', require('./states/preload')); 
 
 	game.state.start('boot');
 }
+
+onDeviceReady()
 },{"./states/boot":7,"./states/menu":8,"./states/play":9,"./states/preload":10}],2:[function(require,module,exports){
 'use strict';
 
@@ -203,15 +207,14 @@ var Scoreboard = function(game) {
 
 	this.scoreboard = this.create(this.game.width / 2, 200, 'scoreboard');
 	this.scoreboard.anchor.setTo(0.5, 0.5);
-	console.log(this.scoreboard.x);
 
-	var scoreX = this.scoreboard.x + this.scoreboard.width/2 - 50;
+	var scoreX = this.scoreboard.width/2 - 50;
 
-	this.scoreText = this.game.add.bitmapText(scoreX, 180, 'flappyfont', '', 18);
-	this.bestScoreText = this.game.add.bitmapText(scoreX, 230, 'flappyfont', '', 18);
+	this.scoreText = this.game.add.bitmapText(scoreX, -22, 'flappyfont', '', 18);
+	this.bestScoreText = this.game.add.bitmapText(scoreX, 25, 'flappyfont', '', 18);
 
-	// this.scoreText.align = 'right';
-	// this.bestScoreText.align = 'right';
+	this.scoreText.align = 'center';
+	this.bestScoreText.align = 'center';
 
 	// add our start button with a callback
 	this.startButton = this.game.add.button(this.game.width / 2, 300, 'startButton', this.startClick, this);
@@ -230,15 +233,13 @@ Scoreboard.prototype.show = function(score) {
 	var medal, bestScore;
 
 	this.isShown = true;
-
-	// Step 1
+	this.scoreboard.addChild(this.scoreText);
+	this.scoreboard.addChild(this.bestScoreText);
 	this.scoreText.setText(score.toString());
 
 	if (!!localStorage) {
-		// Step 2
 		bestScore = localStorage.getItem('bestScore');
 
-		// Step 3
 		if (!bestScore || bestScore < score) {
 			bestScore = score;
 			localStorage.setItem('bestScore', bestScore);
@@ -247,10 +248,8 @@ Scoreboard.prototype.show = function(score) {
 		// Fallback. LocalStorage isn't available
 		bestScore = 'N/A';
 	}
-	// Step 4
 	this.bestScoreText.setText(bestScore + '');
 
-	// Step 5 & 6
 	if (score >= 10 && score < 30) {
 		medal = this.game.add.sprite(-65, 7, 'medals', 1);
 		medal.anchor.setTo(0.5, 0.5);
@@ -261,7 +260,6 @@ Scoreboard.prototype.show = function(score) {
 		this.scoreboard.addChild(medal);
 	}
 
-	// Step 7
 	if (medal) {
 
 		var emitter = this.game.add.emitter(medal.x, medal.y, 400);
@@ -311,8 +309,8 @@ Boot.prototype = {
 module.exports = Boot;
 
 },{}],8:[function(require,module,exports){
-
 'use strict';
+
 function Menu() {}
 
 Menu.prototype = {
@@ -328,35 +326,38 @@ Menu.prototype = {
 
     this.titleGroup = this.game.add.group();
 
-    this.title = this.game.add.sprite(0,0,'title');
+    this.title = this.game.add.sprite(this.game.width / 2, 0, 'title');
+    this.title.anchor.setTo(0.5, 0.5);
     this.titleGroup.add(this.title);
 
-    this.bird = this.game.add.sprite(200,5,'bird');
+    this.bird = this.game.add.sprite(this.game.width / 2, 70, 'bird');
+    this.bird.anchor.setTo(0.5, 0.5);
     this.titleGroup.add(this.bird);
 
     this.bird.animations.add('flap');
     this.bird.animations.play('flap', 12, true);
 
-    this.titleGroup.x = 30;
+    this.titleGroup.x = 0;
     this.titleGroup.y = 100;
 
-    this.game.add.tween(this.titleGroup).to({y:115}, 350, Phaser.Easing.Linear.NONE, true, 0, 1000, true);
+    this.game.add.tween(this.titleGroup).to({
+      y: 115
+    }, 350, Phaser.Easing.Linear.NONE, true, 0, 1000, true);
 
-    this.startButton = this.game.add.button(this.game.width/2, 300, 'startButton', this.startClick, this);
-    this.startButton.anchor.setTo(0.5,0.5);
+    this.startButton = this.game.add.button(this.game.width / 2, 300, 'startButton', this.startClick, this);
+    this.startButton.anchor.setTo(0.5, 0.5);
 
-    
+
   },
   startClick: function() {
     this.game.state.start('play');
-  }, 
+  },
   update: function() {
-   
+
   }
 };
 
 module.exports = Menu;
-
 },{}],9:[function(require,module,exports){
 'use strict';
 
@@ -524,7 +525,7 @@ Preload.prototype = {
     this.load.image('background', 'assets/bonebg.png');
     this.load.image('ground', 'assets/boneground.png');
     this.load.image('ghost', 'assets/ghost.png');
-    this.load.image('title', 'assets/title.png');
+    this.load.image('title', 'assets/logo.png');
     this.load.image('startButton', 'assets/start-button.png');
     this.load.image('instructions', 'assets/instructiondarks.png');
     this.load.image('getReady', 'assets/get-ready.png');
@@ -549,6 +550,8 @@ Preload.prototype = {
   create: function() {
     this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
     this.asset.cropEnabled = false;
+    this.game.scale.startFullScreen(true);
+    this.game.scale.refresh();
   },
   update: function() {
     if (!!this.ready) {
